@@ -1,0 +1,12 @@
+.invoice-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+}
+
+.detail-item {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 4px;
+}
