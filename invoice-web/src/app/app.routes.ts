@@ -7,7 +7,7 @@ export const routes: Routes = [
     },
     {
     path: 'invoice',
-    loadComponent:() => import('./pages/invoice/invoice.component').then(mod => mod.InvoiceFormComponent)
+    loadComponent:() => import('./pages/invoice/invoice.component').then(mod => mod.InvoiceComponent)
     },
 
 ];

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule, FormGroup, FormArray } from '@angular/forms';
 import { InvoiceService } from '../../core/services/invoice.service';
 import { InvoiceDetailToSave, InvoiceToSave } from '../../core/models/invoice';
+import { CustomerDto, CustomerService } from '../../services/customer-service.service';
 
 @Component({
   selector: 'app-invoice-form',
@@ -11,10 +12,17 @@ import { InvoiceDetailToSave, InvoiceToSave } from '../../core/models/invoice';
   templateUrl: './invoice.component.html',
   styleUrls: ['./invoice.component.css']
 })
-export class InvoiceFormComponent {
+export class InvoiceComponent {
+  private customerService = inject(CustomerService);
   private fb = inject(FormBuilder);
   private invoiceService = inject(InvoiceService);
 
+  isModalOpen = false;
+  isEditMode = false;
+
+  customers: CustomerDto[] = [];
+  currentCustomer: CustomerDto | null = null;
+  
   form = this.fb.group({
     customerId: [0, Validators.required],
     invoiceDetails: this.fb.array<FormGroup>([])
@@ -22,6 +30,16 @@ export class InvoiceFormComponent {
 
   get invoiceDetails(): FormArray {
     return this.form.get('invoiceDetails') as FormArray;
+  }
+
+  ngOnInit(): void {
+    this.loadCustomers();
+  }
+    private loadCustomers(): void {
+    this.customerService.getAll().subscribe({
+      next: (data) => this.customers = data,
+      error: () => alert("Error al obtener clientes"),
+    });
   }
 
   addDetail(): void {
@@ -63,5 +81,12 @@ export class InvoiceFormComponent {
     } else {
       this.form.markAllAsTouched();
     }
+  }
+  
+  openToEdit(customer:CustomerDto){
+    this.currentCustomer = customer;
+    this.isEditMode = true;
+    this.isModalOpen = true;
+    this.form.patchValue({customerId:customer.customerId})
   }
 }
